@@ -76,6 +76,9 @@ Board positions are represented by a vertex, i.e. an array of the form `[x, y]` 
 
 ##### `Board.fromDimensions(width, height)`
 
+- `width` `<Integer>`
+- `height` `<Integer>`
+
 Returns a new `Board` instance with a [sign map](#sign-map) of the given dimensions that is filled with `0`.
 
 #### Properties
@@ -92,20 +95,27 @@ Returns a new `Board` instance with a [sign map](#sign-map) of the given dimensi
 
 `<integer>` - The board height.
 
-#### Functions
+#### Board Arrangement Functions
 
-##### `board.clone()`
 ##### `board.get(vertex)`
 ##### `board.set(vertex, sign)`
-##### `board.hasVertex(vertex)`
+##### `board.has(vertex)`
 ##### `board.clear()`
+##### `board.makeMove(sign, vertex[, options])`
+
+#### Capture Count Functions
+
 ##### `board.getCaptures(sign)`
 ##### `board.setCaptures(sign, mutator)`
-##### `board.diff(board)`
+
+#### Board Property Functions
+
 ##### `board.isSquare()`
 ##### `board.isEmpty()`
 ##### `board.isValid()`
-##### `board.getHandicapPlacement(count)`
+
+#### Topology Functions
+
 ##### `board.getDistance(vertex1, vertex2)`
 ##### `board.getNeighbors(vertex)`
 ##### `board.getConnectedComponent(vertex, predicate)`
@@ -113,6 +123,12 @@ Returns a new `Board` instance with a [sign map](#sign-map) of the given dimensi
 ##### `board.getRelatedChains(vertex)`
 ##### `board.getLiberties(vertex)`
 ##### `board.hasLiberties(vertex)`
+
+#### Helper Functions
+
+##### `board.clone()`
+##### `board.diff(board)`
 ##### `board.stringifyVertex(vertex)`
 ##### `board.parseVertex(coord)`
-##### `board.makeMove(sign, vertex[, options])`
+##### `board.getHandicapPlacement(count)`
+

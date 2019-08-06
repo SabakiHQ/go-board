@@ -2,17 +2,17 @@ const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
 class GoBoard {
     constructor(signMap = []) {
+        this.height = signMap.length
+        this.width = this.height === 0 ? 0 : signMap[0].length
+
+        if (signMap.some(row => row.length !== this.width)) {
+            throw new Error('signMap is not well-formed.')
+        }
+
         this.signMap = signMap.map(row => [...row])
+
         this._players = [1, -1]
         this._captures = [0, 0]
-    }
-
-    get height() {
-        return this.signMap.length
-    }
-
-    get width() {
-        return this.height === 0 ? 0 : this.signMap[0].length
     }
 
     get([x, y]) {
@@ -20,11 +20,56 @@ class GoBoard {
     }
 
     set([x, y], sign) {
-        if (this.signMap[y] != null) {
+        if (this.has([x, y])) {
             this.signMap[y][x] = sign
         }
 
         return this
+    }
+
+    has([x, y]) {
+        return 0 <= x && x < this.width && 0 <= y && y < this.height
+    }
+
+    clear() {
+        this.signMap = this.signMap.map(row => row.map(_ => 0))
+    }
+
+    makeMove(sign, vertex, {preventSuicide = false} = {}) {
+        let move = this.clone()
+        if (sign === 0 || !this.has(vertex)) return move
+
+        sign = sign > 0 ? 1 : -1
+        move.set(vertex, sign)
+
+        // Remove captured stones
+
+        let deadNeighbors = move.getNeighbors(vertex)
+            .filter(n => move.get(n) === -sign && !move.hasLiberties(n))
+
+        for (let n of deadNeighbors) {
+            if (move.get(n) === 0) continue
+
+            for (let c of move.getChain(n)) {
+                move.set(c, 0).setCaptures(sign, x => x + 1)
+            }
+        }
+
+        move.set(vertex, sign)
+
+        // Detect suicide
+
+        if (deadNeighbors.length === 0 && !move.hasLiberties(vertex)) {
+            if (preventSuicide) {
+                throw new Error('Suicide prevented.')
+            }
+
+            for (let c of move.getChain(vertex)) {
+                move.set(c, 0).setCaptures(-sign, x => x + 1)
+            }
+        }
+
+        return move
     }
 
     getCaptures(sign) {
@@ -44,40 +89,6 @@ class GoBoard {
         }
 
         return this
-    }
-
-    clone() {
-        let result = new GoBoard(this.signMap)
-        result._captures = [...this._captures]
-
-        return result
-    }
-
-    has([x, y]) {
-        return 0 <= x && x < this.width && 0 <= y && y < this.height
-    }
-
-    clear() {
-        this.signMap = this.signMap.map(row => row.map(_ => 0))
-    }
-
-    diff(board) {
-        if (board.width !== this.width || board.height !== this.height) {
-            return null
-        }
-
-        let result = []
-
-        for (let x = 0; x < this.width; x++) {
-            for (let y = 0; y < this.height; y++) {
-                let sign = board.get([x, y])
-                if (this.get([x, y]) === sign) continue
-
-                result.push([x, y])
-            }
-        }
-
-        return result
     }
 
     isSquare() {
@@ -139,21 +150,13 @@ class GoBoard {
         return this.getConnectedComponent(vertex, v => this.get(v) === sign)
     }
 
-    hasLiberties(vertex, visited = {}) {
-        let sign = this.get(vertex)
-        if (!this.has(vertex) || sign === 0) return false
+    getRelatedChains(vertex) {
+        if (!this.has(vertex) || this.get(vertex) === 0) return []
 
-        if (vertex in visited) return false
-        let neighbors = this.getNeighbors(vertex)
+        let signs = [this.get(vertex), 0]
+        let area = this.getConnectedComponent(vertex, v => signs.includes(this.get(v)))
 
-        if (neighbors.some(n => this.get(n) === 0))
-            return true
-
-        visited[vertex] = true
-
-        return neighbors
-            .filter(n => this.get(n) === sign)
-            .some(n => this.hasLiberties(n, visited))
+        return area.filter(v => this.get(v) === this.get(vertex))
     }
 
     getLiberties(vertex) {
@@ -173,13 +176,47 @@ class GoBoard {
         return liberties
     }
 
-    getRelatedChains(vertex) {
-        if (!this.has(vertex) || this.get(vertex) === 0) return []
+    hasLiberties(vertex, visited = {}) {
+        let sign = this.get(vertex)
+        if (!this.has(vertex) || sign === 0) return false
 
-        let signs = [this.get(vertex), 0]
-        let area = this.getConnectedComponent(vertex, v => signs.includes(this.get(v)))
+        if (vertex in visited) return false
+        let neighbors = this.getNeighbors(vertex)
 
-        return area.filter(v => this.get(v) === this.get(vertex))
+        if (neighbors.some(n => this.get(n) === 0))
+            return true
+
+        visited[vertex] = true
+
+        return neighbors
+            .filter(n => this.get(n) === sign)
+            .some(n => this.hasLiberties(n, visited))
+    }
+
+    clone() {
+        let result = new GoBoard(this.signMap)
+        result._captures = [...this._captures]
+
+        return result
+    }
+
+    diff(board) {
+        if (board.width !== this.width || board.height !== this.height) {
+            return null
+        }
+
+        let result = []
+
+        for (let x = 0; x < this.width; x++) {
+            for (let y = 0; y < this.height; y++) {
+                let sign = board.get([x, y])
+                if (this.get([x, y]) === sign) continue
+
+                result.push([x, y])
+            }
+        }
+
+        return result
     }
 
     stringifyVertex(vertex) {
@@ -195,43 +232,6 @@ class GoBoard {
         let v = [x, y]
 
         return this.has(v) ? v : null
-    }
-
-    makeMove(sign, vertex, {preventSuicide = false} = {}) {
-        let move = this.clone()
-        if (sign === 0 || !this.has(vertex)) return move
-
-        sign = sign > 0 ? 1 : -1
-        move.set(vertex, sign)
-
-        // Remove captured stones
-
-        let deadNeighbors = move.getNeighbors(vertex)
-            .filter(n => move.get(n) === -sign && !move.hasLiberties(n))
-
-        for (let n of deadNeighbors) {
-            if (move.get(n) === 0) continue
-
-            for (let c of move.getChain(n)) {
-                move.set(c, 0).setCaptures(sign, x => x + 1)
-            }
-        }
-
-        move.set(vertex, sign)
-
-        // Detect suicide
-
-        if (deadNeighbors.length === 0 && !move.hasLiberties(vertex)) {
-            if (preventSuicide) {
-                throw new Error('Suicide prevented.')
-            }
-
-            for (let c of move.getChain(vertex)) {
-                move.set(c, 0).setCaptures(-sign, x => x + 1)
-            }
-        }
-
-        return move
     }
 
     getHandicapPlacement(count, {tygem = false} = {}) {
@@ -262,10 +262,7 @@ class GoBoard {
 }
 
 GoBoard.fromDimensions = (width, height) => {
-    let signMap = [...Array(height)].map(_ => Array(width).fill(0))
-    let result = new GoBoard()
-
-    return Object.assign(result, {signMap})
+    return new GoBoard(signMap)
 }
 
 module.exports = GoBoard
