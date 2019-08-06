@@ -1,5 +1,4 @@
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
-const vertexEquals = v => w => v[0] === w[0] && v[1] === w[1]
 
 class GoBoard {
     constructor(signMap = []) {
@@ -126,7 +125,7 @@ class GoBoard {
 
         for (let v of this.getNeighbors(vertex)) {
             if (!func(v)) continue
-            if (result.some(vertexEquals(v))) continue
+            if (result.some(w => w[0] === v[0] && w[1] === v[1])) continue
 
             result.push(v)
             this.getConnectedComponent(v, func, result)
