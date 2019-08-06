@@ -117,18 +117,18 @@ class GoBoard {
         return ignoreBoard ? allNeighbors : allNeighbors.filter(v => this.hasVertex(v))
     }
 
-    getConnectedComponent(vertex, func, result = null) {
+    getConnectedComponent(vertex, predicate, result = null) {
         if (!this.hasVertex(vertex)) return []
         if (!result) result = [vertex]
 
         // Recursive depth-first search
 
         for (let v of this.getNeighbors(vertex)) {
-            if (!func(v)) continue
+            if (!predicate(v)) continue
             if (result.some(w => w[0] === v[0] && w[1] === v[1])) continue
 
             result.push(v)
-            this.getConnectedComponent(v, func, result)
+            this.getConnectedComponent(v, predicate, result)
         }
 
         return result
