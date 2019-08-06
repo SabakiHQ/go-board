@@ -68,41 +68,51 @@ Board positions are represented by a vertex, i.e. an array of the form `[x, y]` 
 
 ### `class Board`
 
-#### `new Board([signMap])`
+#### Constructors
+
+##### `new Board([signMap])`
 
 - `signMap` [`<SignMap>`](#sign-map) *(optional)* - Default: `[]`
 
-#### `Board.fromDimensions(width, height)`
+##### `Board.fromDimensions(width, height)`
 
 Returns a new `Board` instance with a [sign map](#sign-map) of the given dimensions that is filled with `0`.
 
-#### `board.width`
+#### Properties
+
+##### `board.signMap`
+
+[`<SignMap>`](#sign-map) - The underlying sign map of the board.
+
+##### `board.width`
 
 `<integer>` - The board width.
 
-#### `board.height`
+##### `board.height`
 
 `<integer>` - The board height.
 
-#### `board.get(vertex)`
-#### `board.set(vertex, sign)`
-#### `board.getCaptures(sign)`
-#### `board.setCaptures(sign, mutator)`
-#### `board.clone()`
-#### `board.hasVertex(vertex)`
-#### `board.clear()`
-#### `board.diff(board)`
-#### `board.isSquare()`
-#### `board.isEmpty()`
-#### `board.isValid()`
-#### `board.getDistance(vertex1, vertex2)`
-#### `board.getNeighbors(vertex)`
-#### `board.getConnectedComponent(vertex, predicate)`
-#### `board.getChain(vertex)`
-#### `board.getRelatedChains(vertex)`
-#### `board.getLiberties(vertex)`
-#### `board.hasLiberties(vertex)`
-#### `board.stringifyVertex(vertex)`
-#### `board.parseVertex(coord)`
-#### `board.makeMove(sign, vertex[, options])`
-#### `board.getHandicapPlacement(count)`
+#### Functions
+
+##### `board.clone()`
+##### `board.get(vertex)`
+##### `board.set(vertex, sign)`
+##### `board.hasVertex(vertex)`
+##### `board.clear()`
+##### `board.getCaptures(sign)`
+##### `board.setCaptures(sign, mutator)`
+##### `board.diff(board)`
+##### `board.isSquare()`
+##### `board.isEmpty()`
+##### `board.isValid()`
+##### `board.getHandicapPlacement(count)`
+##### `board.getDistance(vertex1, vertex2)`
+##### `board.getNeighbors(vertex)`
+##### `board.getConnectedComponent(vertex, predicate)`
+##### `board.getChain(vertex)`
+##### `board.getRelatedChains(vertex)`
+##### `board.getLiberties(vertex)`
+##### `board.hasLiberties(vertex)`
+##### `board.stringifyVertex(vertex)`
+##### `board.parseVertex(coord)`
+##### `board.makeMove(sign, vertex[, options])`
