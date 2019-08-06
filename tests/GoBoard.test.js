@@ -4,6 +4,9 @@ const Board = require('..')
 t.test('constructor', async t => {
     let board = new Board([[0, 0, 0], [0, 0, 0]])
 
+    t.equal(board.width, 3)
+    t.equal(board.height, 2)
+
     for (let x = 0; x < board.width; x++) {
         for (let y = 0; y < board.height; y++) {
             t.equal(board.get([x, y]), 0)

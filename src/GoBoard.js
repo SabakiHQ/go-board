@@ -195,7 +195,7 @@ class GoBoard {
         return this.hasVertex(v) ? v : null
     }
 
-    makeMove(sign, vertex) {
+    makeMove(sign, vertex, {preventSuicide = false} = {}) {
         let move = this.clone()
         if (sign === 0 || !this.hasVertex(vertex)) return move
 
@@ -220,6 +220,10 @@ class GoBoard {
         // Detect suicide
 
         if (deadNeighbors.length === 0 && !move.hasLiberties(vertex)) {
+            if (preventSuicide) {
+                throw new Error('Suicide prevented.')
+            }
+
             for (let c of move.getChain(vertex)) {
                 move.set(c, 0).setCaptures(-sign, x => x + 1)
             }
