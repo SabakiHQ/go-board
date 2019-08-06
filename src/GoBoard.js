@@ -53,7 +53,7 @@ class GoBoard {
         return result
     }
 
-    hasVertex([x, y]) {
+    has([x, y]) {
         return 0 <= x && x < this.width && 0 <= y && y < this.height
     }
 
@@ -109,16 +109,16 @@ class GoBoard {
     }
 
     getNeighbors(vertex, ignoreBoard = false) {
-        if (!ignoreBoard && !this.hasVertex(vertex)) return []
+        if (!ignoreBoard && !this.has(vertex)) return []
 
         let [x, y] = vertex
         let allNeighbors = [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]
 
-        return ignoreBoard ? allNeighbors : allNeighbors.filter(v => this.hasVertex(v))
+        return ignoreBoard ? allNeighbors : allNeighbors.filter(v => this.has(v))
     }
 
     getConnectedComponent(vertex, predicate, result = null) {
-        if (!this.hasVertex(vertex)) return []
+        if (!this.has(vertex)) return []
         if (!result) result = [vertex]
 
         // Recursive depth-first search
@@ -141,7 +141,7 @@ class GoBoard {
 
     hasLiberties(vertex, visited = {}) {
         let sign = this.get(vertex)
-        if (!this.hasVertex(vertex) || sign === 0) return false
+        if (!this.has(vertex) || sign === 0) return false
 
         if (vertex in visited) return false
         let neighbors = this.getNeighbors(vertex)
@@ -157,7 +157,7 @@ class GoBoard {
     }
 
     getLiberties(vertex) {
-        if (!this.hasVertex(vertex) || this.get(vertex) === 0) return []
+        if (!this.has(vertex) || this.get(vertex) === 0) return []
 
         let chain = this.getChain(vertex)
         let liberties = []
@@ -174,7 +174,7 @@ class GoBoard {
     }
 
     getRelatedChains(vertex) {
-        if (!this.hasVertex(vertex) || this.get(vertex) === 0) return []
+        if (!this.has(vertex) || this.get(vertex) === 0) return []
 
         let signs = [this.get(vertex), 0]
         let area = this.getConnectedComponent(vertex, v => signs.includes(this.get(v)))
@@ -183,7 +183,7 @@ class GoBoard {
     }
 
     stringifyVertex(vertex) {
-        if (!this.hasVertex(vertex)) return null
+        if (!this.has(vertex)) return null
         return alpha[vertex[0]] + (this.height - vertex[1])
     }
 
@@ -194,12 +194,12 @@ class GoBoard {
         let y = this.height - +coord.slice(1)
         let v = [x, y]
 
-        return this.hasVertex(v) ? v : null
+        return this.has(v) ? v : null
     }
 
     makeMove(sign, vertex, {preventSuicide = false} = {}) {
         let move = this.clone()
-        if (sign === 0 || !this.hasVertex(vertex)) return move
+        if (sign === 0 || !this.has(vertex)) return move
 
         sign = sign > 0 ? 1 : -1
         move.set(vertex, sign)

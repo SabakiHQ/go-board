@@ -28,19 +28,19 @@ t.test('clone', async t => {
     t.deepEqual(board.signMap, clone.signMap)
 })
 
-t.test('hasVertex', async t => {
+t.test('has', async t => {
     t.test('should return true when vertex is on board', async t => {
         let board = Board.fromDimensions(19, 19)
-        t.assert(board.hasVertex([0, 0]))
-        t.assert(board.hasVertex([13, 18]))
-        t.assert(board.hasVertex([5, 4]))
+        t.assert(board.has([0, 0]))
+        t.assert(board.has([13, 18]))
+        t.assert(board.has([5, 4]))
     })
     t.test('should return false when vertex is not on board', async t => {
         let board = Board.fromDimensions(19, 19)
-        t.assert(!board.hasVertex([-1, -1]))
-        t.assert(!board.hasVertex([5, -1]))
-        t.assert(!board.hasVertex([board.width, 0]))
-        t.assert(!board.hasVertex([board.width, board.height]))
+        t.assert(!board.has([-1, -1]))
+        t.assert(!board.has([5, -1]))
+        t.assert(!board.has([board.width, 0]))
+        t.assert(!board.has([board.width, board.height]))
     })
 })
 
