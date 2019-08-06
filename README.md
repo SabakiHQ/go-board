@@ -1,2 +1,3 @@
-# go-board
-WIP: An immutable Go board data type.
+# @sabaki/go-board
+
+WIP: A Go board data type.
