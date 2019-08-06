@@ -4,7 +4,7 @@
   "description": "An immutable Go board data type",
   "main": "./src/main.js",
   "scripts": {
-    "test": "tap"
+    "test": "tap --test-regex=.*\\.test\\.js$"
   },
   "repository": {
     "type": "git",

@@ -188,6 +188,8 @@ class GoBoard {
     }
 
     parseVertex(coord) {
+        if (coord.length < 2) return null
+
         let x = alpha.indexOf(coord[0].toUpperCase())
         let y = this.height - +coord.slice(1)
         let v = [x, y]
