@@ -262,6 +262,8 @@ class GoBoard {
 }
 
 GoBoard.fromDimensions = (width, height) => {
+    let signMap = [...Array(height)].map(_ => Array(width).fill(0))
+
     return new GoBoard(signMap)
 }
 
