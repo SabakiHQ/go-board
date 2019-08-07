@@ -2,14 +2,13 @@ const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
 class GoBoard {
     constructor(signMap = []) {
+        this.signMap = signMap
         this.height = signMap.length
         this.width = this.height === 0 ? 0 : signMap[0].length
 
         if (signMap.some(row => row.length !== this.width)) {
             throw new Error('signMap is not well-formed.')
         }
-
-        this.signMap = signMap.map(row => [...row])
 
         this._players = [1, -1]
         this._captures = [0, 0]
@@ -55,8 +54,6 @@ class GoBoard {
                 move.set(c, 0).setCaptures(sign, x => x + 1)
             }
         }
-
-        move.set(vertex, sign)
 
         // Detect suicide
 
@@ -120,13 +117,11 @@ class GoBoard {
         return Math.abs(v[0] - w[0]) + Math.abs(v[1] - w[1])
     }
 
-    getNeighbors(vertex, ignoreBoard = false) {
-        if (!ignoreBoard && !this.has(vertex)) return []
+    getNeighbors(vertex) {
+        if (!this.has(vertex)) return []
 
         let [x, y] = vertex
-        let allNeighbors = [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]
-
-        return ignoreBoard ? allNeighbors : allNeighbors.filter(v => this.has(v))
+        return [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]].filter(v => this.has(v))
     }
 
     getConnectedComponent(vertex, predicate, result = null) {
@@ -195,10 +190,9 @@ class GoBoard {
     }
 
     clone() {
-        let result = new GoBoard(this.signMap)
-        result._captures = [...this._captures]
-
-        return result
+        return new GoBoard(this.signMap.map(row => [...row]))
+            .setCaptures(1, this.getCaptures(1))
+            .setCaptures(-1, this.getCaptures(-1))
     }
 
     diff(board) {

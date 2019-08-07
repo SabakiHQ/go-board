@@ -127,7 +127,7 @@ Sets the sign of all vertices to `0`. This function mutates the board and return
 - `options` `<Object>` *(optional)*
     - `preventSuicide` `<Boolean>` - Default: `false`
 
-Returns a new board instance that represents the board state after the player who corresponds to the given `sign` makes a move at `vertex`. The capture count will also be updated correctly. If `board` is [valid](#boardisvalid) then the new returned board instance will also be valid. This function will not mutate `board`.
+Returns a new board instance that represents the board state after the player who corresponds to the given `sign` makes a move at `vertex`. The capture count will also be updated correctly. If `board` is [valid](#boardisvalid) then the new returned board instance will also be valid. This function will not mutate `board`. If `sign` is `0` or `vertex` not valid, this function will be equivalent to [`clone()`](#boardclone).
 
 If `preventSuicide` is set to `true`, this function will throw an error if the attempted move is a suicide.
 
@@ -135,13 +135,13 @@ If `preventSuicide` is set to `true`, this function will throw an error if the a
 
 ##### `board.getCaptures(sign)`
 
-- `sign` `<Integer>` - One of `-1`, `0`, or `1`
+- `sign` `<Integer>` - One of `-1` or `1`
 
 Returns the number of stones that the player, who corresponds to the given `sign`, captured.
 
 ##### `board.setCaptures(sign, mutator)`
 
-- `sign` `<Integer>` - One of `-1`, `0`, or `1`
+- `sign` `<Integer>` - One of `-1` or `1`
 - `mutator` `<Function | Integer>`
 
 If `mutator` is a function of the following form
@@ -179,7 +179,7 @@ Returns the [Manhattan distance](https://en.wikipedia.org/wiki/Taxicab_geometry)
 
 - `vertex` [`<Vertex>`](#vertex)
 
-Returns an array of [vertices](#vertex) that are exactly [Manhattan distance](https://en.wikipedia.org/wiki/Taxicab_geometry) `1` away from the given `vertex`.
+Returns an array of [vertices](#vertex) on the board that are exactly [Manhattan distance](https://en.wikipedia.org/wiki/Taxicab_geometry) `1` away from the given `vertex`.
 
 ##### `board.getConnectedComponent(vertex, predicate)`
 ##### `board.getChain(vertex)`
