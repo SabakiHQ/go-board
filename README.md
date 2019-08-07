@@ -89,35 +89,98 @@ Returns a new `Board` instance with a [sign map](#sign-map) of the given dimensi
 
 ##### `board.width`
 
-`<integer>` - The board width.
+`<Integer>` - The board width.
 
 ##### `board.height`
 
-`<integer>` - The board height.
+`<Integer>` - The board height.
 
-#### Board Arrangement Functions
+#### Stone Arrangement Functions
 
 ##### `board.get(vertex)`
+
+- `vertex` [`<Vertex>`](#vertex)
+
+Returns the sign at the given `vertex`.
+
 ##### `board.set(vertex, sign)`
+
+- `vertex` [`<Vertex>`](#vertex)
+- `sign` `<Integer>` - One of `-1`, `0`, or `1`
+
+Sets the sign at the given `vertex`. No validity checks will be made. This function mutates the board and returns `this` to enable chaining.
+
 ##### `board.has(vertex)`
+
+- `vertex` [`<Vertex>`](#vertex)
+
+Returns a boolean whether the given `vertex` is valid or can be found on the board.
+
 ##### `board.clear()`
+
+Sets the sign of all vertices to `0`. This function mutates the board and returns `this` to enable chaining.
+
 ##### `board.makeMove(sign, vertex[, options])`
+
+- `sign` `<Integer>` - One of `-1`, `0`, or `1`
+- `vertex` [`<Vertex>`](#vertex)
+- `options` `<Object>` *(optional)*
+    - `preventSuicide` `<Boolean>` - Default: `false`
+
+Returns a new board instance that represents the board state after the player who corresponds to the given `sign` makes a move at `vertex`. The capture count will also be updated correctly. If `board` is [valid](#boardisvalid) then the new returned board instance will also be valid. This function will not mutate `board`.
+
+If `preventSuicide` is set to `true`, this function will throw an error if the attempted move is a suicide.
 
 #### Capture Count Functions
 
 ##### `board.getCaptures(sign)`
+
+- `sign` `<Integer>` - One of `-1`, `0`, or `1`
+
+Returns the number of stones that the player, who corresponds to the given `sign`, captured.
+
 ##### `board.setCaptures(sign, mutator)`
+
+- `sign` `<Integer>` - One of `-1`, `0`, or `1`
+- `mutator` `<Function | Integer>`
+
+If `mutator` is a function of the following form
+
+~~~js
+(prevCaptures: <Integer>) -> <Integer>
+~~~
+
+we will update the capture count of the player who corresponds to the given `sign` according to the `mutator` function. If `mutator` is an integer, we will directly set the capture count to `mutator` instead. This function mutates the board and returns `this` to enable chaining.
 
 #### Board Property Functions
 
 ##### `board.isSquare()`
+
+Equivalent to `board.width === board.height`.
+
 ##### `board.isEmpty()`
+
+Returns `true` if [`signMap`](#boardsignmap) contains `0` only, otherwise `false`.
+
 ##### `board.isValid()`
+
+Returns `true` if all [chains](#boardgetchainvertex) have at least one liberty, otherwise `false`.
 
 #### Topology Functions
 
 ##### `board.getDistance(vertex1, vertex2)`
+
+- `vertex1` [`<Vertex>`](#vertex)
+- `vertex2` [`<Vertex>`](#vertex)
+
+Returns the [Manhattan distance](https://en.wikipedia.org/wiki/Taxicab_geometry) between the given vertices.
+
 ##### `board.getNeighbors(vertex)`
+
+- `vertex` [`<Vertex>`](#vertex)
+
+Returns an array of [vertices](#vertex) that are exactly [Manhattan distance](https://en.wikipedia.org/wiki/Taxicab_geometry) `1` away from the given `vertex`.
+
 ##### `board.getConnectedComponent(vertex, predicate)`
 ##### `board.getChain(vertex)`
 ##### `board.getRelatedChains(vertex)`
@@ -127,8 +190,7 @@ Returns a new `Board` instance with a [sign map](#sign-map) of the given dimensi
 #### Helper Functions
 
 ##### `board.clone()`
-##### `board.diff(board)`
+##### `board.diff(otherBoard)`
 ##### `board.stringifyVertex(vertex)`
 ##### `board.parseVertex(coord)`
 ##### `board.getHandicapPlacement(count)`
-

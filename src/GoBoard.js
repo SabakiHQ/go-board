@@ -33,6 +33,7 @@ class GoBoard {
 
     clear() {
         this.signMap = this.signMap.map(row => row.map(_ => 0))
+        return this
     }
 
     makeMove(sign, vertex, {preventSuicide = false} = {}) {
@@ -96,7 +97,7 @@ class GoBoard {
     }
 
     isEmpty() {
-        return this.signMap.every(row => row.every(x => x === 0))
+        return this.signMap.every(row => row.every(x => !x))
     }
 
     isValid() {
