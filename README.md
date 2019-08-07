@@ -182,15 +182,68 @@ Returns the [Manhattan distance](https://en.wikipedia.org/wiki/Taxicab_geometry)
 Returns an array of [vertices](#vertex) on the board that are exactly [Manhattan distance](https://en.wikipedia.org/wiki/Taxicab_geometry) `1` away from the given `vertex`.
 
 ##### `board.getConnectedComponent(vertex, predicate)`
+
+- `vertex` [`<Vertex>`](#vertex)
+- `predicate` `<Function>`
+
+`predicate` is a function of the following form:
+
+~~~js
+(vertex: <Vertex>) -> <Boolean>
+~~~
+
+Returns a list of [vertices](#vertex) that fulfill `predicate` and connect to `vertex` through a string of vertices that all fulfill `predicate`.
+
 ##### `board.getChain(vertex)`
+
+- `vertex` [`<Vertex>`](#vertex)
+
+Equivalent to `board.getConnectedComponent(vertex, v => board.get(v) === board.get(vertex))`.
+
 ##### `board.getRelatedChains(vertex)`
+
+- `vertex` [`<Vertex>`](#vertex)
+
+Returns an array of [chains](#boardgetchainvertex) of the same sign as `vertex` that belong to the same enemy area as `vertex`.
+
 ##### `board.getLiberties(vertex)`
+
+- `vertex` [`<Vertex>`](#vertex)
+
+Returns an array of [vertices](#vertex) that represents the liberties of the chain that `vertex` belongs to.
+
 ##### `board.hasLiberties(vertex)`
+
+- `vertex` [`<Vertex>`](#vertex)
+
+Equivalent to `board.getLiberties(vertex).length > 0`, but faster.
 
 #### Helper Functions
 
 ##### `board.clone()`
+
+Returns a new `Board` instance that is equivalent to `board`, but mutations to either of them will not affect one another.
+
 ##### `board.diff(otherBoard)`
+
+- `board` [`<Board>`](#class-board)
+
+Returns an array of [vertices](#vertex) whose signs are identical in `board` and `otherBoard`. If `otherBoard` has different dimensions from `board`, this will return `null`.
+
 ##### `board.stringifyVertex(vertex)`
+
+- `vertex` [`<Vertex>`](#vertex)
+
+Returns a string that represents the given `vertex`.
+
 ##### `board.parseVertex(coord)`
+
+- `coord` `<String>`
+
+Returns a [vertex](#vertex) that the given `coord` represents.
+
 ##### `board.getHandicapPlacement(count)`
+
+- `count` `<Integer>`
+
+Returns a list of [vertices](#vertex) that represent the positions of black handicap stones.
