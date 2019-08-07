@@ -1,7 +1,7 @@
 {
   "name": "@sabaki/go-board",
   "version": "1.0.0",
-  "description": "An immutable Go board data type",
+  "description": "A Go board data type",
   "main": "./src/main.js",
   "scripts": {
     "test": "tap --test-regex=.*\\.test\\.js$"
@@ -16,7 +16,6 @@
     "weiqi",
     "baduk",
     "datatype",
-    "immutable",
     "strategy"
   ],
   "author": "Yichuan Shen",
