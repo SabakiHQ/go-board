@@ -16,16 +16,15 @@ t.test('constructor', async t => {
 
     t.equal(board.getCaptures(1), 0)
     t.equal(board.getCaptures(-1), 0)
+
+    t.throws(() => new Board([[0, 0, 0], [0, 0], [0, 0, 0]]))
 })
 
-t.test('clone', async t => {
-    let board = Board.fromDimensions(19, 19)
-    ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]].forEach(x => board.set(x, 1))
-    ;[[1, 1], [2, 1]].forEach(x => board.set(x, -1))
-    let clone = board.clone()
+t.test('fromDimensions', async t => {
+    let board = Board.fromDimensions(5, 4)
 
-    t.notEqual(board.signMap, clone.signMap)
-    t.deepEqual(board.signMap, clone.signMap)
+    t.equal(board.width, 5)
+    t.equal(board.height, 4)
 })
 
 t.test('has', async t => {
@@ -50,141 +49,6 @@ t.test('clear', async t => {
     board.clear()
 
     t.deepEqual(board.signMap, Board.fromDimensions(9, 9).signMap)
-})
-
-t.test('diff', async t => {
-    let board1 = Board.fromDimensions(9, 9)
-    let board2 = board1.makeMove(1, [3, 3]).set([4, 4], 1).set([3, 4], 1)
-
-    t.deepEqual(board1.diff(board2), board2.diff(board1))
-    t.deepEqual(board1.diff(board2).sort(), [[3, 3], [3, 4], [4, 4]])
-
-    let board3 = Board.fromDimensions(8, 9)
-
-    t.equal(board1.diff(board3), board3.diff(board1))
-    t.equal(board1.diff(board3), null)
-})
-
-t.test('isSquare', async t => {
-    let board = Board.fromDimensions(15, 16)
-    t.assert(!board.isSquare())
-
-    board = data.board
-    t.assert(board.isSquare())
-})
-
-t.test('isEmpty', async t => {
-    let board = Board.fromDimensions(15, 16)
-    t.assert(board.isEmpty())
-
-    board = data.board
-    t.assert(!board.isEmpty())
-})
-
-t.test('isValid', async t => {
-    t.test('should return true for valid board arrangements', async t => {
-        let board = Board.fromDimensions(19, 19)
-        t.assert(board.isValid())
-
-        board.set([1, 1], 1).set([1, 2], -1)
-        t.assert(board.isValid())
-    })
-    t.test('should return false for non-valid board arrangements', async t => {
-        let board = Board.fromDimensions(19, 19)
-        ;[[1, 0], [0, 1]].forEach(x => board.set(x, 1))
-        ;[[0, 0]].forEach(x => board.set(x, -1))
-        t.assert(!board.isValid())
-
-        board = Board.fromDimensions(19, 19)
-        ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2], [3, 1]].forEach(x => board.set(x, 1))
-        ;[[1, 1], [2, 1]].forEach(x => board.set(x, -1))
-        t.assert(!board.isValid())
-    })
-})
-
-t.test('getDistance', async t => {
-    let board = Board.fromDimensions(19, 19)
-    t.equal(board.getDistance([1, 2], [8, 4]), 9)
-    t.equal(board.getDistance([-1, -2], [8, 4]), 15)
-})
-
-t.test('getNeighbors', async t => {
-    t.test('should return neighbors for vertices in the middle', async t => {
-        let board = Board.fromDimensions(19, 19)
-        t.deepEqual(board.getNeighbors([1, 1]), [[0, 1], [2, 1], [1, 0], [1, 2]])
-    })
-    t.test('should return neighbors for vertices on the side', async t => {
-        let board = Board.fromDimensions(19, 19)
-        t.deepEqual(board.getNeighbors([1, 0]), [[0, 0], [2, 0], [1, 1]])
-    })
-    t.test('should return neighbors for vertices in the corner', async t => {
-        let board = Board.fromDimensions(19, 19)
-        t.deepEqual(board.getNeighbors([0, 0]), [[1, 0], [0, 1]])
-    })
-    t.test('should return empty list for vertices not on board', async t => {
-        let board = Board.fromDimensions(19, 19)
-        t.deepEqual(board.getNeighbors([-1, -1]), [])
-    })
-})
-
-t.test('getConnectedComponent', async t => {
-    t.test('should be able to return the chain of a vertex', async t => {
-        let board = Board.fromDimensions(19, 19)
-        ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]].forEach(x => board.set(x, 1))
-        ;[[1, 1], [2, 1]].forEach(x => board.set(x, -1))
-
-        t.deepEqual(
-            board.getConnectedComponent([1, 1], v => board.get(v) === -1).sort(),
-            [[1, 1], [2, 1]]
-        )
-    })
-    t.test('should be able to return the stone connected component of a vertex', async t => {
-        let board = Board.fromDimensions(19, 19)
-        ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]].forEach(x => board.set(x, 1))
-        ;[[1, 1], [2, 1]].forEach(x => board.set(x, -1))
-
-        t.deepEqual(
-            board.getConnectedComponent([1, 1], v => board.get(v) !== 0).sort(),
-            [[0, 1], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]]
-        )
-    })
-})
-
-t.test('(has|get)Liberties', async t => {
-    t.test('should return the liberties of the chain of the given vertex', async t => {
-        let board = Board.fromDimensions(19, 19)
-        ;[[1, 1], [2, 1]].forEach(x => board.set(x, -1))
-
-        t.deepEqual(
-            board.getLiberties([1, 1]).sort(),
-            [[0, 1], [1, 0], [1, 2], [2, 0], [2, 2], [3, 1]]
-        )
-        t.assert(board.hasLiberties([1, 1]))
-        t.deepEqual(board.getLiberties([1, 2]), [])
-        t.assert(!board.hasLiberties([1, 2]))
-    })
-    t.test('should return empty list for a vertex not on the board', async t => {
-        let board = Board.fromDimensions(19, 19)
-
-        t.deepEqual(board.getLiberties([-1, -1]), [])
-        t.assert(!board.hasLiberties([-1, -1]))
-    })
-})
-
-t.test('stringifyVertex', async t => {
-    t.equal(data.board.stringifyVertex([3, 3]), 'D16')
-    t.equal(data.board.stringifyVertex([16, 14]), 'R5')
-    t.equal(data.board.stringifyVertex([-1, 14]), null)
-    t.equal(data.board.stringifyVertex([0, 19]), null)
-})
-
-t.test('parseVertex', async t => {
-    t.deepEqual(data.board.parseVertex('d16'), [3, 3])
-    t.deepEqual(data.board.parseVertex('R5'), [16, 14])
-    t.deepEqual(data.board.parseVertex('R'), null)
-    t.deepEqual(data.board.parseVertex('Z3'), null)
-    t.deepEqual(data.board.parseVertex('pass'), null)
-    t.deepEqual(data.board.parseVertex(''), null)
 })
 
 t.test('makeMove', async t => {
@@ -284,9 +148,186 @@ t.test('makeMove', async t => {
     })
 })
 
-t.test('fromDimensions', async t => {
-    let board = Board.fromDimensions(5, 4)
+t.test('isSquare', async t => {
+    let board = Board.fromDimensions(15, 16)
+    t.assert(!board.isSquare())
 
-    t.equal(board.width, 5)
-    t.equal(board.height, 4)
+    board = data.board
+    t.assert(board.isSquare())
+})
+
+t.test('isEmpty', async t => {
+    let board = Board.fromDimensions(15, 16)
+    t.assert(board.isEmpty())
+
+    board = data.board
+    t.assert(!board.isEmpty())
+})
+
+t.test('isValid', async t => {
+    t.test('should return true for valid board arrangements', async t => {
+        let board = Board.fromDimensions(19, 19)
+        t.assert(board.isValid())
+
+        board.set([1, 1], 1).set([1, 2], -1)
+        t.assert(board.isValid())
+    })
+    t.test('should return false for non-valid board arrangements', async t => {
+        let board = Board.fromDimensions(19, 19)
+        ;[[1, 0], [0, 1]].forEach(x => board.set(x, 1))
+        ;[[0, 0]].forEach(x => board.set(x, -1))
+        t.assert(!board.isValid())
+
+        board = Board.fromDimensions(19, 19)
+        ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2], [3, 1]].forEach(x => board.set(x, 1))
+        ;[[1, 1], [2, 1]].forEach(x => board.set(x, -1))
+        t.assert(!board.isValid())
+    })
+})
+
+t.test('getDistance', async t => {
+    let board = Board.fromDimensions(19, 19)
+    t.equal(board.getDistance([1, 2], [8, 4]), 9)
+    t.equal(board.getDistance([-1, -2], [8, 4]), 15)
+})
+
+t.test('getNeighbors', async t => {
+    t.test('should return neighbors for vertices in the middle', async t => {
+        let board = Board.fromDimensions(19, 19)
+        t.deepEqual(board.getNeighbors([1, 1]), [[0, 1], [2, 1], [1, 0], [1, 2]])
+    })
+    t.test('should return neighbors for vertices on the side', async t => {
+        let board = Board.fromDimensions(19, 19)
+        t.deepEqual(board.getNeighbors([1, 0]), [[0, 0], [2, 0], [1, 1]])
+    })
+    t.test('should return neighbors for vertices in the corner', async t => {
+        let board = Board.fromDimensions(19, 19)
+        t.deepEqual(board.getNeighbors([0, 0]), [[1, 0], [0, 1]])
+    })
+    t.test('should return empty list for vertices not on board', async t => {
+        let board = Board.fromDimensions(19, 19)
+        t.deepEqual(board.getNeighbors([-1, -1]), [])
+    })
+})
+
+t.test('getConnectedComponent', async t => {
+    t.test('should be able to return the chain of a vertex', async t => {
+        let board = Board.fromDimensions(19, 19)
+        ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]].forEach(x => board.set(x, 1))
+        ;[[1, 1], [2, 1]].forEach(x => board.set(x, -1))
+
+        t.deepEqual(
+            board.getConnectedComponent([1, 1], v => board.get(v) === -1).sort(),
+            [[1, 1], [2, 1]]
+        )
+    })
+    t.test('should be able to return the stone connected component of a vertex', async t => {
+        let board = Board.fromDimensions(19, 19)
+        ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]].forEach(x => board.set(x, 1))
+        ;[[1, 1], [2, 1]].forEach(x => board.set(x, -1))
+
+        t.deepEqual(
+            board.getConnectedComponent([1, 1], v => board.get(v) !== 0).sort(),
+            [[0, 1], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]]
+        )
+    })
+})
+
+t.test('getRelatedChains', async t => {
+    t.deepEqual(data.board.getRelatedChains([0, 0]), [])
+    t.deepEqual(data.board.getRelatedChains([3, 0]).sort(), [
+        [3, 0], [2, 1], [4, 1], [4, 0], [5, 0], [4, 2], [3, 2], [2, 2], [4, 3],
+        [5, 3], [4, 4], [2, 5], [5, 5], [6, 5], [6, 4], [4, 6], [3, 6], [2, 7], [2, 8], [2, 9],
+        [2, 10], [1, 10], [0, 10], [0, 11], [3, 10], [2, 11], [4, 11], [5, 11], [6, 11], [7, 11],
+        [8, 11], [9, 11], [9, 10], [7, 10], [7, 9], [6, 9], [5, 9], [8, 9], [8, 8], [7, 7], [8, 7],
+        [8, 12], [8, 13], [8, 14], [9, 14], [10, 15], [9, 15], [8, 16], [7, 17], [7, 18], [6, 18], [5, 18], [4, 18],
+        [4, 17], [8, 18], [10, 18], [11, 18], [10, 17], [9, 17], [10, 16], [11, 16], [4, 12], [3, 8]
+    ].sort())
+})
+
+t.test('(has|get)Liberties', async t => {
+    t.test('should return the liberties of the chain of the given vertex', async t => {
+        let board = Board.fromDimensions(19, 19)
+        ;[[1, 1], [2, 1]].forEach(x => board.set(x, -1))
+
+        t.deepEqual(
+            board.getLiberties([1, 1]).sort(),
+            [[0, 1], [1, 0], [1, 2], [2, 0], [2, 2], [3, 1]]
+        )
+        t.assert(board.hasLiberties([1, 1]))
+        t.deepEqual(board.getLiberties([1, 2]), [])
+        t.assert(!board.hasLiberties([1, 2]))
+    })
+    t.test('should return empty list for a vertex not on the board', async t => {
+        let board = Board.fromDimensions(19, 19)
+
+        t.deepEqual(board.getLiberties([-1, -1]), [])
+        t.assert(!board.hasLiberties([-1, -1]))
+    })
+})
+
+t.test('clone', async t => {
+    let board = Board.fromDimensions(19, 19)
+    ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]].forEach(x => board.set(x, 1))
+    ;[[1, 1], [2, 1]].forEach(x => board.set(x, -1))
+    let clone = board.clone()
+
+    t.notEqual(board.signMap, clone.signMap)
+    t.deepEqual(board.signMap, clone.signMap)
+})
+
+t.test('diff', async t => {
+    let board1 = Board.fromDimensions(9, 9)
+    let board2 = board1.makeMove(1, [3, 3]).set([4, 4], 1).set([3, 4], 1)
+
+    t.deepEqual(board1.diff(board2), board2.diff(board1))
+    t.deepEqual(board1.diff(board2).sort(), [[3, 3], [3, 4], [4, 4]])
+
+    let board3 = Board.fromDimensions(8, 9)
+
+    t.equal(board1.diff(board3), board3.diff(board1))
+    t.equal(board1.diff(board3), null)
+})
+
+t.test('stringifyVertex', async t => {
+    t.equal(data.board.stringifyVertex([3, 3]), 'D16')
+    t.equal(data.board.stringifyVertex([16, 14]), 'R5')
+    t.equal(data.board.stringifyVertex([-1, 14]), null)
+    t.equal(data.board.stringifyVertex([0, 19]), null)
+})
+
+t.test('parseVertex', async t => {
+    t.deepEqual(data.board.parseVertex('d16'), [3, 3])
+    t.deepEqual(data.board.parseVertex('R5'), [16, 14])
+    t.deepEqual(data.board.parseVertex('R'), null)
+    t.deepEqual(data.board.parseVertex('Z3'), null)
+    t.deepEqual(data.board.parseVertex('pass'), null)
+    t.deepEqual(data.board.parseVertex(''), null)
+})
+
+t.test('getHandicapPlacement', async t => {
+    t.test('should return empty array for small boards', async t => {
+        t.deepEqual(Board.fromDimensions(6, 19).getHandicapPlacement(9), [])
+        t.deepEqual(Board.fromDimensions(6, 6).getHandicapPlacement(9), [])
+    })
+
+    t.test('should not return tengen for even dimensions', async t => {
+        let square = Board.fromDimensions(8, 8).getHandicapPlacement(9)
+        let portrait = Board.fromDimensions(8, 11).getHandicapPlacement(9)
+        let landscape = Board.fromDimensions(11, 8).getHandicapPlacement(9)
+
+        t.assert(!square.some(v => v[0] === 4 && v[1] === 4))
+        t.assert(!portrait.some(v => v[0] === 4 && v[1] === 5))
+        t.assert(!landscape.some(v => v[0] === 5 && v[1] === 4))
+    })
+
+    t.test('should return tengen for odd dimensions', async t => {
+        let square = Board.fromDimensions(9, 9).getHandicapPlacement(9)
+        let portrait = Board.fromDimensions(9, 11).getHandicapPlacement(9)
+        let landscape = Board.fromDimensions(11, 9).getHandicapPlacement(9)
+
+        t.assert(square.some(v => v[0] === 4 && v[1] === 4))
+        t.assert(portrait.some(v => v[0] === 4 && v[1] === 5))
+        t.assert(landscape.some(v => v[0] === 5 && v[1] === 4))
+    })
 })

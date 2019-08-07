@@ -204,7 +204,7 @@ Equivalent to `board.getConnectedComponent(vertex, v => board.get(v) === board.g
 
 - `vertex` [`<Vertex>`](#vertex)
 
-Returns an array of [chains](#boardgetchainvertex) of the same sign as `vertex` that belong to the same enemy area as `vertex`.
+Returns an array of [vertices](#vertex) of the same sign as `vertex` that belong to the same enemy area as `vertex`.
 
 ##### `board.getLiberties(vertex)`
 
