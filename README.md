@@ -228,7 +228,7 @@ Returns a new `Board` instance that is equivalent to `board`, but mutations to e
 
 - `board` [`<Board>`](#class-board)
 
-Returns an array of [vertices](#vertex) whose signs are identical in `board` and `otherBoard`. If `otherBoard` has different dimensions from `board`, this will return `null`.
+Returns an array of [vertices](#vertex) whose signs are not identical in `board` and `otherBoard`. If `otherBoard` has different dimensions from `board`, this will return `null`.
 
 ##### `board.stringifyVertex(vertex)`
 
