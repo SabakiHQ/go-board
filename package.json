@@ -1,6 +1,6 @@
 {
   "name": "@sabaki/go-board",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "An immutable Go board data type",
   "main": "./src/main.js",
   "scripts": {
