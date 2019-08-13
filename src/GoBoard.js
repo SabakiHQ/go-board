@@ -35,9 +35,13 @@ class GoBoard {
         return this
     }
 
-    makeMove(sign, vertex, {preventSuicide = false} = {}) {
+    makeMove(sign, vertex, {preventSuicide = false, preventOverwrite = false} = {}) {
         let move = this.clone()
         if (sign === 0 || !this.has(vertex)) return move
+
+        if (preventOverwrite && !!this.get(vertex)) {
+            throw new Error('Overwrite prevented')
+        }
 
         sign = sign > 0 ? 1 : -1
         move.set(vertex, sign)
@@ -59,7 +63,7 @@ class GoBoard {
 
         if (deadNeighbors.length === 0 && !move.hasLiberties(vertex)) {
             if (preventSuicide) {
-                throw new Error('Suicide prevented.')
+                throw new Error('Suicide prevented')
             }
 
             for (let c of move.getChain(vertex)) {

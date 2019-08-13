@@ -34,6 +34,7 @@ t.test('has', async t => {
         t.assert(board.has([13, 18]))
         t.assert(board.has([5, 4]))
     })
+
     t.test('should return false when vertex is not on board', async t => {
         let board = Board.fromDimensions(19, 19)
         t.assert(!board.has([-1, -1]))
@@ -58,6 +59,7 @@ t.test('makeMove', async t => {
 
         t.deepEqual(board.signMap, Board.fromDimensions(19, 19).signMap)
     })
+
     t.test('should make a move', async t => {
         let board = Board.fromDimensions(19, 19)
         let move = board.makeMove(1, [5, 5])
@@ -65,6 +67,7 @@ t.test('makeMove', async t => {
 
         t.deepEqual(board.signMap, move.signMap)
     })
+
     t.test('should remove captured stones', async t => {
         let board = Board.fromDimensions(19, 19)
         let black = [[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]]
@@ -89,6 +92,7 @@ t.test('makeMove', async t => {
         t.equal(move.get([1, 0]), 1)
         t.equal(move.get([0, 1]), 1)
     })
+
     t.test('should count captures correctly', async t => {
         let board = Board.fromDimensions(19, 19)
         let black = [[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]]
@@ -109,6 +113,7 @@ t.test('makeMove', async t => {
         t.equal(move.getCaptures(-1), 0)
         t.equal(move.getCaptures(1), 1)
     })
+
     t.test('should handle suicide correctly', async t => {
         let board = Board.fromDimensions(19, 19)
         ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2], [3, 1]].forEach(x => board.set(x, 1))
@@ -120,6 +125,7 @@ t.test('makeMove', async t => {
         t.equal(move.get([3, 1]), 1)
         t.equal(move.get([1, 2]), 1)
     })
+
     t.test('should prevent suicide if desired', async t => {
         let board = Board.fromDimensions(19, 19)
         ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2], [3, 1]].forEach(x => board.set(x, 1))
@@ -127,6 +133,7 @@ t.test('makeMove', async t => {
 
         t.throws(() => board.makeMove(-1, [2, 1], {preventSuicide: true}))
     })
+
     t.test('should handle stone overwrites correctly', async t => {
         let board = Board.fromDimensions(19, 19)
         ;[[10, 9], [10, 10], [10, 11]].forEach(x => board.set(x, 1))
@@ -137,6 +144,15 @@ t.test('makeMove', async t => {
         t.equal(move.get([10, 9]), 0)
         t.equal(move.get([10, 11]), 1)
     })
+
+    t.test('should prevent stone overwrites if desired', async t => {
+        let board = Board.fromDimensions(19, 19)
+        ;[[10, 9], [10, 10], [10, 11]].forEach(x => board.set(x, 1))
+        ;[[10, 8], [9, 9], [11, 9]].forEach(x => board.set(x, -1))
+
+        t.throws(() => board.makeMove(-1, [10, 10], {preventOverwrite: true}))
+    })
+
     t.test('should make a pass', async t => {
         let board = Board.fromDimensions(19, 19)
         t.deepEqual(board.makeMove(1, [-1, -1]).signMap, board.signMap)
@@ -172,6 +188,7 @@ t.test('isValid', async t => {
         board.set([1, 1], 1).set([1, 2], -1)
         t.assert(board.isValid())
     })
+
     t.test('should return false for non-valid board arrangements', async t => {
         let board = Board.fromDimensions(19, 19)
         ;[[1, 0], [0, 1]].forEach(x => board.set(x, 1))
@@ -196,14 +213,17 @@ t.test('getNeighbors', async t => {
         let board = Board.fromDimensions(19, 19)
         t.deepEqual(board.getNeighbors([1, 1]), [[0, 1], [2, 1], [1, 0], [1, 2]])
     })
+
     t.test('should return neighbors for vertices on the side', async t => {
         let board = Board.fromDimensions(19, 19)
         t.deepEqual(board.getNeighbors([1, 0]), [[0, 0], [2, 0], [1, 1]])
     })
+
     t.test('should return neighbors for vertices in the corner', async t => {
         let board = Board.fromDimensions(19, 19)
         t.deepEqual(board.getNeighbors([0, 0]), [[1, 0], [0, 1]])
     })
+
     t.test('should return empty list for vertices not on board', async t => {
         let board = Board.fromDimensions(19, 19)
         t.deepEqual(board.getNeighbors([-1, -1]), [])
@@ -221,6 +241,7 @@ t.test('getConnectedComponent', async t => {
             [[1, 1], [2, 1]]
         )
     })
+
     t.test('should be able to return the stone connected component of a vertex', async t => {
         let board = Board.fromDimensions(19, 19)
         ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]].forEach(x => board.set(x, 1))
@@ -258,6 +279,7 @@ t.test('(has|get)Liberties', async t => {
         t.deepEqual(board.getLiberties([1, 2]), [])
         t.assert(!board.hasLiberties([1, 2]))
     })
+
     t.test('should return empty list for a vertex not on the board', async t => {
         let board = Board.fromDimensions(19, 19)
 
