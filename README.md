@@ -237,13 +237,13 @@ Returns an array of [vertices](#vertex) whose signs are not identical in `board`
 
 - `vertex` [`<Vertex>`](#vertex)
 
-Returns a string that represents the given `vertex`.
+Returns a string that represents the given `vertex`. If `vertex` is invalid or not on the board, an empty string will be returned.
 
 ##### `board.parseVertex(coord)`
 
 - `coord` `<String>`
 
-Returns a [vertex](#vertex) that the given `coord` represents.
+Returns a [vertex](#vertex) that the given `coord` represents. If `coord` is invalid or not on the board, `[-1, -1]` will be returned.
 
 ##### `board.getHandicapPlacement(count)`
 

@@ -219,18 +219,18 @@ class GoBoard {
     }
 
     stringifyVertex(vertex) {
-        if (!this.has(vertex)) return null
+        if (!this.has(vertex)) return ''
         return alpha[vertex[0]] + (this.height - vertex[1])
     }
 
     parseVertex(coord) {
-        if (coord.length < 2) return null
+        if (coord.length < 2) return [-1, -1]
 
         let x = alpha.indexOf(coord[0].toUpperCase())
         let y = this.height - +coord.slice(1)
         let v = [x, y]
 
-        return this.has(v) ? v : null
+        return this.has(v) ? v : [-1, -1]
     }
 
     getHandicapPlacement(count, {tygem = false} = {}) {

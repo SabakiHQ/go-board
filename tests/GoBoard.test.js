@@ -314,17 +314,17 @@ t.test('diff', async t => {
 t.test('stringifyVertex', async t => {
     t.equal(data.board.stringifyVertex([3, 3]), 'D16')
     t.equal(data.board.stringifyVertex([16, 14]), 'R5')
-    t.equal(data.board.stringifyVertex([-1, 14]), null)
-    t.equal(data.board.stringifyVertex([0, 19]), null)
+    t.equal(data.board.stringifyVertex([-1, 14]), '')
+    t.equal(data.board.stringifyVertex([0, 19]), '')
 })
 
 t.test('parseVertex', async t => {
     t.deepEqual(data.board.parseVertex('d16'), [3, 3])
     t.deepEqual(data.board.parseVertex('R5'), [16, 14])
-    t.deepEqual(data.board.parseVertex('R'), null)
-    t.deepEqual(data.board.parseVertex('Z3'), null)
-    t.deepEqual(data.board.parseVertex('pass'), null)
-    t.deepEqual(data.board.parseVertex(''), null)
+    t.deepEqual(data.board.parseVertex('R'), [-1, -1])
+    t.deepEqual(data.board.parseVertex('Z3'), [-1, -1])
+    t.deepEqual(data.board.parseVertex('pass'), [-1, -1])
+    t.deepEqual(data.board.parseVertex(''), [-1, -1])
 })
 
 t.test('getHandicapPlacement', async t => {
