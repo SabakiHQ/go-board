@@ -76,7 +76,7 @@ class GoBoard {
 
     analyzeMove(sign, vertex) {
         let pass = sign === 0 || !this.has(vertex)
-        let overwrite = !!this.get(vertex)
+        let overwrite = !pass && !!this.get(vertex)
 
         let originalSign = this.get(vertex)
         this.set(vertex, sign)

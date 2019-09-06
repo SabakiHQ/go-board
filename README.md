@@ -141,10 +141,10 @@ If `preventSuicide` is set to `true`, this function will throw an error if the a
 
 Analyzes the hypothetical move that the player who corresponds to the given `sign` would make at `vertex`. Returns an object with the following keys with boolean values:
 
-- `pass` - `true` if the move is a pass (`sign` is `0` or `vertex` is not on board)
-- `overwrite` - `true` if the move overwrites an existing stone on the board
-- `capturing` - `true` if the move captures some enemy stones
-- `suicide` - `true` if the move ends up in a suicide
+- `pass` - Specifies if the move would be a pass (`sign` is `0` or `vertex` is not valid)
+- `overwrite` - Specifies if the move would overwrite an occupid stone on the board
+- `capturing` - Specifies if the move would capture some enemy stone
+- `suicide` - Specifies if the move would end up in a suicide
 
 #### Capture Count Functions
 
