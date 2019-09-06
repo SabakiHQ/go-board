@@ -164,6 +164,82 @@ t.test('makeMove', async t => {
     })
 })
 
+t.test('analyzeMove', async t => {
+    t.test('should detect passes', async t => {
+        let board = Board.fromDimensions(19, 19)
+        let analysis = board.analyzeMove(1, [19, 19])
+
+        t.deepEqual(analysis, {
+            pass: true,
+            overwrite: false,
+            capturing: false,
+            suicide: false
+        })
+
+        analysis = board.analyzeMove(0, [5, 5])
+
+        t.deepEqual(analysis, {
+            pass: true,
+            overwrite: false,
+            capturing: false,
+            suicide: false
+        })
+    })
+
+    t.test('should detect overwrites', async t => {
+        let board = Board.fromDimensions(19, 19)
+        board.set([5, 5], -1)
+        let analysis = board.analyzeMove(1, [5, 5])
+
+        t.deepEqual(analysis, {
+            pass: false,
+            overwrite: true,
+            capturing: false,
+            suicide: false
+        })
+
+        analysis = board.analyzeMove(1, [5, 6])
+
+        t.deepEqual(analysis, {
+            pass: false,
+            overwrite: false,
+            capturing: false,
+            suicide: false
+        })
+    })
+
+    t.test('should detect captures', async t => {
+        let board = Board.fromDimensions(19, 19)
+        let black = [[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]]
+        let white = [[1, 1], [2, 1]]
+
+        black.forEach(x => board.set(x, 1))
+        white.forEach(x => board.set(x, -1))
+
+        let analysis = board.analyzeMove(1, [3, 1])
+
+        t.deepEqual(analysis, {
+            pass: false,
+            overwrite: false,
+            capturing: true,
+            suicide: false
+        })
+
+        // Edge capture
+
+        board = Board.fromDimensions(19, 19)
+        board.set([0, 1], 1).set([0, 0], -1)
+        analysis = board.analyzeMove(1, [1, 0])
+
+        t.deepEqual(analysis, {
+            pass: false,
+            overwrite: false,
+            capturing: true,
+            suicide: false
+        })
+    })
+})
+
 t.test('isSquare', async t => {
     let board = Board.fromDimensions(15, 16)
     t.assert(!board.isSquare())

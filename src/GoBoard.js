@@ -74,6 +74,21 @@ class GoBoard {
         return move
     }
 
+    analyzeMove(sign, vertex) {
+        let pass = sign === 0 || !this.has(vertex)
+        let overwrite = !!this.get(vertex)
+
+        let originalSign = this.get(vertex)
+        this.set(vertex, sign)
+
+        let capturing = !pass && this.getNeighbors(vertex)
+            .some(n => this.get(n) === -sign && !this.hasLiberties(n))
+        let suicide = !pass && !capturing && !this.hasLiberties(vertex)
+
+        this.set(vertex, originalSign)
+        return {pass, overwrite, capturing, suicide}
+    }
+
     getCaptures(sign) {
         let index = this._players.indexOf(sign)
         if (index < 0) return null
