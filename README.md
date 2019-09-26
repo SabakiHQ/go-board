@@ -74,10 +74,10 @@ Board positions are represented by a vertex, i.e. an array of the form `[x, y]` 
 
 - `signMap` [`<SignMap>`](#sign-map) *(optional)* - Default: `[]`
 
-##### `Board.fromDimensions(width, height)`
+##### `Board.fromDimensions(width[, height])`
 
 - `width` `<Integer>`
-- `height` `<Integer>`
+- `height` `<Integer>` *(optional)* - Default: `width`
 
 Returns a new `Board` instance with a [sign map](#sign-map) of the given dimensions that is filled with `0`.
 

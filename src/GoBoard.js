@@ -275,7 +275,9 @@ class GoBoard {
     }
 }
 
-GoBoard.fromDimensions = (width, height) => {
+GoBoard.fromDimensions = (width, height = null) => {
+    if (height == null) height = width
+
     let signMap = [...Array(height)].map(_ => Array(width).fill(0))
 
     return new GoBoard(signMap)
