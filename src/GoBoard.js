@@ -1,5 +1,9 @@
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
+function vertexEquals([x1, y1], [x2, y2]) {
+    return x1 === x2 && y1 === y2
+}
+
 class GoBoard {
     constructor(signMap = []) {
         this.signMap = signMap
@@ -7,11 +11,12 @@ class GoBoard {
         this.width = this.height === 0 ? 0 : signMap[0].length
 
         if (signMap.some(row => row.length !== this.width)) {
-            throw new Error('signMap is not well-formed.')
+            throw new Error('signMap is not well-formed')
         }
 
         this._players = [1, -1]
         this._captures = [0, 0]
+        this._koInfo = {sign: 0, vertex: [-1, -1]}
     }
 
     get([x, y]) {
@@ -35,7 +40,11 @@ class GoBoard {
         return this
     }
 
-    makeMove(sign, vertex, {preventSuicide = false, preventOverwrite = false} = {}) {
+    makeMove(sign, vertex, {
+        preventSuicide = false,
+        preventOverwrite = false,
+        preventKo = false
+    } = {}) {
         let move = this.clone()
         if (sign === 0 || !this.has(vertex)) return move
 
@@ -44,24 +53,48 @@ class GoBoard {
         }
 
         sign = sign > 0 ? 1 : -1
+
+        if (
+            preventKo
+            && this._koInfo.sign === sign
+            && vertexEquals(this._koInfo.vertex, vertex)
+        ) {
+            throw new Error('Ko prevented')
+        }
+
         move.set(vertex, sign)
 
         // Remove captured stones
 
-        let deadNeighbors = move.getNeighbors(vertex)
-            .filter(n => move.get(n) === -sign && !move.hasLiberties(n))
+        let neighbors = move.getNeighbors(vertex)
+        let deadStones = []
+        let deadNeighbors = neighbors.filter(n => move.get(n) === -sign && !move.hasLiberties(n))
 
         for (let n of deadNeighbors) {
             if (move.get(n) === 0) continue
 
             for (let c of move.getChain(n)) {
                 move.set(c, 0).setCaptures(sign, x => x + 1)
+                deadStones.push(c)
             }
+        }
+
+        // Detect future ko
+
+        let liberties = move.getLiberties(vertex)
+
+        if (
+            deadStones.length === 1
+            && liberties.length === 1
+            && vertexEquals(liberties[0], deadStones[0])
+            && neighbors.every(n => move.get(n) !== sign)
+        ) {
+            move._koInfo = {sign: -sign, vertex: deadStones[0]}
         }
 
         // Detect suicide
 
-        if (deadNeighbors.length === 0 && !move.hasLiberties(vertex)) {
+        if (deadStones.length === 0 && liberties.length === 0) {
             if (preventSuicide) {
                 throw new Error('Suicide prevented')
             }
@@ -77,6 +110,7 @@ class GoBoard {
     analyzeMove(sign, vertex) {
         let pass = sign === 0 || !this.has(vertex)
         let overwrite = !pass && !!this.get(vertex)
+        let ko = this._koInfo.sign === sign && vertexEquals(this._koInfo.vertex, vertex)
 
         let originalSign = this.get(vertex)
         this.set(vertex, sign)
@@ -86,7 +120,8 @@ class GoBoard {
         let suicide = !pass && !capturing && !this.hasLiberties(vertex)
 
         this.set(vertex, originalSign)
-        return {pass, overwrite, capturing, suicide}
+
+        return {pass, overwrite, capturing, suicide, ko}
     }
 
     getCaptures(sign) {
@@ -132,8 +167,8 @@ class GoBoard {
         return true
     }
 
-    getDistance(v, w) {
-        return Math.abs(v[0] - w[0]) + Math.abs(v[1] - w[1])
+    getDistance([x1, y1], [x2, y2]) {
+        return Math.abs(x2 - x1) + Math.abs(y2 - y1)
     }
 
     getNeighbors(vertex) {
@@ -151,7 +186,7 @@ class GoBoard {
 
         for (let v of this.getNeighbors(vertex)) {
             if (!predicate(v)) continue
-            if (result.some(w => w[0] === v[0] && w[1] === v[1])) continue
+            if (result.some(w => vertexEquals(w, v))) continue
 
             result.push(v)
             this.getConnectedComponent(v, predicate, result)
