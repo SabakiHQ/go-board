@@ -127,12 +127,15 @@ Sets the sign of all vertices to `0`. This function mutates the board and return
 - `options` `<Object>` *(optional)*
     - `preventOverwrite` `<Boolean>` - Default: `false`
     - `preventSuicide` `<Boolean>` - Default: `false`
+    - `preventKo` `<Boolean>` - Default: `false`
 
 Returns a new board instance that represents the board state after the player who corresponds to the given `sign` makes a move at `vertex`. The capture count will also be updated correctly. If `board` is [valid](#boardisvalid) then the new returned board instance will also be valid. This function will not mutate `board`. If `sign` is `0` or `vertex` not valid, this function will be equivalent to [`clone()`](#boardclone).
 
 If `preventOverwrite` is set to `true`, this function will throw an error if the attempted move is on a vertex that is already occupied by a stone.
 
 If `preventSuicide` is set to `true`, this function will throw an error if the attempted move is a suicide.
+
+If `preventKo` is set to `true`, this function will throw an error if the attempted move repeats the position that led to `board`.
 
 ##### `board.analyzeMove(sign, vertex)`
 
@@ -145,6 +148,7 @@ Analyzes the hypothetical move that the player who corresponds to the given `sig
 - `overwrite` - Specifies if the move would overwrite an occupid stone on the board
 - `capturing` - Specifies if the move would capture some enemy stone
 - `suicide` - Specifies if the move would end up in a suicide
+- `ko` - Specifies if the move would repeat the position that led to `board`
 
 #### Capture Count Functions
 
