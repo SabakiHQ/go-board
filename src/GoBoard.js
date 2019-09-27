@@ -82,14 +82,14 @@ class GoBoard {
         // Detect future ko
 
         let liberties = move.getLiberties(vertex)
-
-        if (
-            deadStones.length === 1
+        let hasKo = deadStones.length === 1
             && liberties.length === 1
             && vertexEquals(liberties[0], deadStones[0])
             && neighbors.every(n => move.get(n) !== sign)
-        ) {
-            move._koInfo = {sign: -sign, vertex: deadStones[0]}
+
+        move._koInfo = {
+            sign: hasKo ? -sign : 0,
+            vertex: hasKo ? deadStones[0] : [-1, -1]
         }
 
         // Detect suicide
