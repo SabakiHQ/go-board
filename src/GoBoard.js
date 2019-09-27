@@ -244,9 +244,13 @@ class GoBoard {
     }
 
     clone() {
-        return new GoBoard(this.signMap.map(row => [...row]))
+        let result = new GoBoard(this.signMap.map(row => [...row]))
             .setCaptures(1, this.getCaptures(1))
             .setCaptures(-1, this.getCaptures(-1))
+
+        result._koInfo = this._koInfo;
+
+        return result;
     }
 
     diff(board) {
