@@ -145,7 +145,7 @@ If `preventKo` is set to `true`, this function will throw an error if the attemp
 Analyzes the hypothetical move that the player who corresponds to the given `sign` would make at `vertex`. Returns an object with the following keys with boolean values:
 
 - `pass` - Specifies if the move would be a pass (`sign` is `0` or `vertex` is not valid)
-- `overwrite` - Specifies if the move would overwrite an occupid stone on the board
+- `overwrite` - Specifies if the move would overwrite an occupied stone on the board
 - `capturing` - Specifies if the move would capture some enemy stone
 - `suicide` - Specifies if the move would end up in a suicide
 - `ko` - Specifies if the move would repeat the position that led to `board`
