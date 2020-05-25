@@ -64,7 +64,7 @@ declare class GoBoard {
     getChain(vertex: Vertex): Vertex[];
     getRelatedChains(vertex: Vertex): Vertex[];
     getLiberties(vertex: Vertex): Vertex[];
-    hasLiberties(vertex: Vertex, visited?: {[key: Vertex]: boolean}): boolean;
+    hasLiberties(vertex: Vertex, visited?: {[key: string]: boolean}): boolean;
     clone(): GoBoard;
     diff(board: GoBoard): Vertex[] | null;
     stringifyVertex(vertex: Vertex): string;
