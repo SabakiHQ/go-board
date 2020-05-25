@@ -1,10 +1,10 @@
-type Vertex = [number, number];
-enum Sign {
+export type Vertex = [number, number];
+export enum Sign {
     White = -1,
     Empty = 0,
     Black = 1,
 }
-type SignMap = Sign[][];
+export type SignMap = Sign[][];
 
 declare const alpha: string;
 
