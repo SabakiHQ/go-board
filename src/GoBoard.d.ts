@@ -50,7 +50,10 @@ declare class GoBoard {
         ko: boolean
     }
     getCaptures(sign: Sign): number
-    setCaptures(sign: Sign, mutator: number | ((m: number) => number)): GoBoard
+    setCaptures(
+        sign: Sign,
+        mutator: number | ((prevCaptures: number) => number)
+    ): GoBoard
     isSquare(): boolean
     isEmpty(): boolean
     isValid(): boolean
@@ -58,7 +61,7 @@ declare class GoBoard {
     getNeighbors(vertex: Vertex): Vertex[]
     getConnectedComponent(
         vertex: Vertex,
-        predicate: (v: Vertex) => boolean,
+        predicate: (vertex: Vertex) => boolean,
         result?: Vertex[]
     ): Vertex[]
     getChain(vertex: Vertex): Vertex[]
