@@ -6,18 +6,10 @@ export enum Sign {
 }
 export type SignMap = Sign[][]
 
-declare const alpha: string
-
-declare function vertexEquals([x1, y1]: Vertex, [x2, y2]: Vertex): boolean
-
 declare class GoBoard {
-    public signMap: SignMap
-    public height: number
-    public width: number
-
-    private _players: [Sign, Sign]
-    private _captures: [number, number]
-    private _koInfo: {sign: Sign; vertex: Vertex}
+    signMap: SignMap
+    height: number
+    width: number
 
     constructor(signMap?: SignMap)
     static fromDimensions(width: number, height?: number): GoBoard
@@ -29,11 +21,7 @@ declare class GoBoard {
     makeMove(
         sign: Sign,
         vertex: Vertex,
-        {
-            preventSuicide,
-            preventOverwrite,
-            preventKo,
-        }?: {
+        options?: {
             preventSuicide?: boolean
             preventOverwrite?: boolean
             preventKo?: boolean
@@ -61,18 +49,17 @@ declare class GoBoard {
     getNeighbors(vertex: Vertex): Vertex[]
     getConnectedComponent(
         vertex: Vertex,
-        predicate: (vertex: Vertex) => boolean,
-        result?: Vertex[]
+        predicate: (vertex: Vertex) => boolean
     ): Vertex[]
     getChain(vertex: Vertex): Vertex[]
     getRelatedChains(vertex: Vertex): Vertex[]
     getLiberties(vertex: Vertex): Vertex[]
-    hasLiberties(vertex: Vertex, visited?: {[key: string]: boolean}): boolean
+    hasLiberties(vertex: Vertex): boolean
     clone(): GoBoard
     diff(board: GoBoard): Vertex[] | null
     stringifyVertex(vertex: Vertex): string
     parseVertex(coord: string): Vertex
-    getHandicapPlacement(count: number, {tygem}?: {tygem?: boolean}): Vertex[]
+    getHandicapPlacement(count: number): Vertex[]
 }
 
 export default GoBoard
