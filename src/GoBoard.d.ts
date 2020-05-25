@@ -42,7 +42,13 @@ declare class GoBoard {
     analyzeMove(
         sign: Sign,
         vertex: Vertex
-    ): {pass: bool; overwrite: bool; capturing: bool; suicide: bool; ko: bool};
+    ): {
+        pass: boolean;
+        overwrite: boolean;
+        capturing: boolean;
+        suicide: boolean;
+        ko: boolean;
+    };
     getCaptures(sign: Sign): number;
     setCaptures(sign: Sign, mutator: number | ((m: number) => number)): GoBoard;
     isSquare(): boolean;
