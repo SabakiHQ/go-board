@@ -1,22 +1,18 @@
 export type Vertex = [number, number]
-export enum Sign {
-    White = -1,
-    Empty = 0,
-    Black = 1,
-}
+export enum Sign {White = -1, Empty = 0, Black = 1}
 export type SignMap = Sign[][]
 
 declare class GoBoard {
+    constructor(signMap?: SignMap)
+    static fromDimensions(width: number, height?: number): GoBoard
+
     signMap: SignMap
     height: number
     width: number
 
-    constructor(signMap?: SignMap)
-    static fromDimensions(width: number, height?: number): GoBoard
-
-    get([x, y]: Vertex): number | null
-    set([x, y]: Vertex, sign: Sign): GoBoard
-    has([x, y]: Vertex): boolean
+    get(vertex: Vertex): number | null
+    set(vertex: Vertex, sign: Sign): GoBoard
+    has(vertex: Vertex): boolean
     clear(): GoBoard
     makeMove(
         sign: Sign,
@@ -45,7 +41,7 @@ declare class GoBoard {
     isSquare(): boolean
     isEmpty(): boolean
     isValid(): boolean
-    getDistance([x1, y1]: Vertex, [x2, y2]: Vertex): number
+    getDistance(vertex1: Vertex, vertex2: Vertex): number
     getNeighbors(vertex: Vertex): Vertex[]
     getConnectedComponent(
         vertex: Vertex,
