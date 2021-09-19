@@ -1,5 +1,5 @@
 export type Vertex = [number, number]
-export enum Sign {White = -1, Empty = 0, Black = 1}
+export type Sign = 0 | -1 | 1
 export type SignMap = Sign[][]
 
 declare class GoBoard {

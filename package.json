@@ -3,6 +3,7 @@
   "version": "1.4.2",
   "description": "A Go board data type",
   "main": "./src/main.js",
+  "types": "./src/main.d.ts",
   "scripts": {
     "test": "tap --test-regex=.*\\.test\\.js$"
   },
