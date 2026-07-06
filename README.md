@@ -1,4 +1,4 @@
-# @sabaki/go-board [![Build Status](https://travis-ci.org/SabakiHQ/go-board.svg?branch=master)](https://travis-ci.org/SabakiHQ/go-board)
+# @sabaki/go-board [![CI](https://github.com/SabakiHQ/go-board/actions/workflows/ci.yml/badge.svg)](https://github.com/SabakiHQ/go-board/actions/workflows/ci.yml)
 
 A Go board data type.
 
