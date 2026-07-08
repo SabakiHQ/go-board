@@ -5,7 +5,7 @@
   "main": "./src/main.js",
   "types": "./src/main.d.ts",
   "scripts": {
-    "test": "tap --test-regex=.*\\.test\\.js$"
+    "test": "tap --allow-incomplete-coverage tests/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -26,6 +26,6 @@
   },
   "homepage": "https://github.com/SabakiHQ/go-board#readme",
   "devDependencies": {
-    "tap": "^14.6.1"
+    "tap": "^21.7.4"
   }
 }
